@@ -38,6 +38,11 @@
 **토큰 발행과 유효성 확인**
 
 - [ ]  Access / Refresh Token 발행과 검증에 관한 **테스트 시나리오** 작성하기
+- AccessToken 발행 성공 테스트
+- RefreshToken 발행 성공 테스트
+- AccessToken 만료 시간 검증 성공 테스트
+- JWT 토큰 검증 실패 테스트
+- getUsernameFromToken 검증 실패 테스트
 
 **유닛 테스트 작성**
 
