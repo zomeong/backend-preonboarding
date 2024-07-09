@@ -76,9 +76,4 @@ public class TokenProvider implements InitializingBean {
             .map(authority -> (String) authority)
             .collect(Collectors.toSet());
     }
-
-    private Key getKeyFromBase64EncodedKey(String base64EncodedSecretKey) {
-        byte[] keyBytes = Decoders.BASE64.decode(base64EncodedSecretKey);
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
 }
