@@ -1,7 +1,6 @@
 package com.hanghae99.preonboardingbackend.config.jwt;
 
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +18,8 @@ import java.util.stream.Collectors;
 public class TokenProvider implements InitializingBean {
     private static final String AUTHORITIES_KEY = "authorities";
     private static final String BEARER = "bearer";
-    private static final long ACCESS_TOKEN_VALIDITY = 1000 * 60 * 30; // 30분
-    private static final long REFRESH_TOKEN_VALIDITY = 1000 * 60 * 60 * 24 * 7; // 7일
+    private long accessTokenValidity = 1000 * 60 * 30;
+    private long refreshTokenValidity = 1000 * 60 * 60 * 24 * 7;
 
     @Value("${jwt.secret}")
     private String secret;
@@ -33,7 +32,7 @@ public class TokenProvider implements InitializingBean {
 
     public String createAccessToken(String username, Set<String> authorities) {
         long now = (new Date()).getTime();
-        Date validity = new Date(now + ACCESS_TOKEN_VALIDITY);
+        Date validity = new Date(now + accessTokenValidity);
 
         return Jwts.builder()
             .setSubject(username)
@@ -44,9 +43,9 @@ public class TokenProvider implements InitializingBean {
             .compact();
     }
 
-    public String createRefreshToken(String username) {
+    public String createRefreshToken() {
         long now = (new Date()).getTime();
-        Date validity = new Date(now + REFRESH_TOKEN_VALIDITY);
+        Date validity = new Date(now + refreshTokenValidity);
 
         return Jwts.builder()
             .signWith(key, SignatureAlgorithm.HS512)
