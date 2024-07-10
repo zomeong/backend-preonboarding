@@ -2,6 +2,7 @@ package com.hanghae99.preonboardingbackend.config.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -16,8 +17,11 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class TokenProvider implements InitializingBean {
-    private static final String AUTHORITIES_KEY = "authorities";
+
     private static final String BEARER = "bearer";
+    private static final String AUTHORITIES_KEY = "authorities";
+    public static final String AUTHORIZATION_HEADER = "Authorization";
+    public static final String REFRESH_AUTHORIZATION_HEADER = "RefreshAuthorization";
     private long accessTokenValidity = 1000 * 60 * 30;
     private long refreshTokenValidity = 1000 * 60 * 60 * 24 * 7;
 
@@ -64,6 +68,14 @@ public class TokenProvider implements InitializingBean {
         return false;
     }
 
+    public String getAccessToken(HttpServletRequest request) {
+        return request.getHeader(AUTHORIZATION_HEADER);
+    }
+
+    public String getRefreshToken(HttpServletRequest request) {
+        return request.getHeader(REFRESH_AUTHORIZATION_HEADER);
+    }
+
     public String getUsernameFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
     }
@@ -74,5 +86,12 @@ public class TokenProvider implements InitializingBean {
         return ((List<?>) claims.get(AUTHORITIES_KEY)).stream()
             .map(authority -> (String) authority)
             .collect(Collectors.toSet());
+    }
+
+    public String substringToken(String tokenValue) {
+        if(tokenValue.startsWith(BEARER)) {
+            return tokenValue.substring(BEARER.length());
+        }
+        throw new IllegalArgumentException("Invalid token");
     }
 }

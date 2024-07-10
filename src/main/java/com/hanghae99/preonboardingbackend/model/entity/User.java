@@ -1,13 +1,17 @@
 package com.hanghae99.preonboardingbackend.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hanghae99.preonboardingbackend.model.dto.SignupResDto;
 import jakarta.persistence.*;
+import java.util.HashSet;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.util.Set;
 
 @Entity
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -34,10 +38,18 @@ public class User {
     @JsonIgnore
     private boolean activated;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "user_authority",
         joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "user_id")},
         inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "authority_name")})
     private Set<Authority> authorities;
+
+    public SignupResDto toResponseDto() {
+        return SignupResDto.builder()
+            .username(this.username)
+            .nickname(this.nickname)
+            .authorities(this.authorities)
+            .build();
+    }
 }
