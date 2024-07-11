@@ -115,6 +115,8 @@
 
 - [ ]  Swagger UI 로 접속 가능하게 하기
 
+배포 후 Swagger UI 접속 URL : http://3.36.61.105:8080/swagger-ui/index.html#
+
 ### Day 3 - 백엔드 개선하기
 
 ---
